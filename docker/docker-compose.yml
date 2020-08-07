@@ -1,0 +1,28 @@
+version: '2'
+services:
+  file-service:
+    build:
+      context: ./
+    image: file-service
+    environment:
+    - COMPOSER_CARD=Server1@composer
+    - COMPOSER_NAMESPACES=never
+    - COMPOSER_AUTHENTICATION=false
+    - COMPOSER_MULTIUSER=false
+    - JPDA_ADDRESS=8000
+    - JPDA_TRANSPORT=dt_socket
+#    - JAVA_HOME=/home/composer/java/jre
+#    - COMPOSER_DATASOURCES={"db":{"name":"db","connector":"mongodb","host":"mongo"}}
+#    command: ./tomcat/bin/startup.sh && tail -f ./tomcat/logs/catalina.out
+    ports:
+    - 8080:8080
+    - 9999:3000
+    - 8000:8000
+    volumes:
+    - ./btl:/usr/local/tomcat/webapps/ROOT
+    - ./files:/usr/local/tomcat/files
+    - ~/.composer:/root/.composer/
+    command: sh -c 'composer-rest-server | (catalina.sh jpda run && tail -f ./logs/catalina.out) '
+#    sh -c 'composer-rest-server | (catalina.sh jpda start && tail -f ./logs/catalina.out) '
+#        - ~/composer/packages/composer-rest-server:/home/composer-rest-server
+    container_name: file-service
