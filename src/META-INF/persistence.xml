@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <persistence-unit name="NewPersistenceUnit">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+<!--        <class>Module.Employee.EmployeeModel</class>-->
+<!--        <class>Module.TicketAttribute.TicketattributeModel</class>-->
+<!--        <class>Module.TicketAttribute.TicketattributeModel</class>-->
+<!--        <class>Module.TicketAttribute.TicketattributeModel</class>-->
+<!--        <class>Module.TicketAttribute.TicketattributeModel</class>-->
+<!--        <class>Module.TicketAttribute.TicketattributeModel</class>-->
+<!--        <class>Module.TicketAttribute.TicketattributeModel</class>-->
+<!--        <class>Model.TicketattributesModel</class>-->
+<!--        <class>Module.TicketImage.TicketimageModel</class>-->
+<!--        <class>Model.TicketreadsModel</class>-->
+<!--        <class>Model.TicketrelatersModel</class>-->
+<!--        <class>Module.TicketThread.TicketthreadModel</class>-->
+<!--        <class>Module.User.TokenModel</class>-->
+<!--        <class>Module.User.UserModel</class>-->
+<!--        <class>Module.File.FileModel</class>-->
+<!--        <class>Module.Location.LocationModel</class>-->
+<!--        <class>Module.Permission.PermissionModel</class>-->
+<!--        <class>Module.Role.RoleModel</class>-->
+<!--        <class>Module.Route.RouteModel</class>-->
+<!--        <class>Module.Team.TeamModel</class>-->
+<!--        <class>Module.Employee.EmployeeModel</class>-->
+<!--        <class>Module.File.FileModel</class>-->
+<!--        <class>Module.Location.LocationModel</class>-->
+<!--        <class>Module.Permission.PermissionModel</class>-->
+<!--        <class>Module.Role.RoleModel</class>-->
+<!--        <class>Module.Route.RouteModel</class>-->
+<!--        <class>Module.Team.TeamModel</class>-->
+<!--        <class>Module.Ticket.TicketModel</class>-->
+<!--        <class>Module.TicketRead.TicketreadModel</class>-->
+<!--        <class>Module.TicketRelater.TicketrelaterModel</class>-->
+<!--        <class>Module.User.TokenModel</class>-->
+<!--        <class>Model.EmployeeModel</class>-->
+<!--        <class>Model.FileModel</class>-->
+<!--        <class>Model.GroupModel</class>-->
+<!--        <class>Model.PermissionModel</class>-->
+<!--        <class>Model.RoleModel</class>-->
+<!--        <class>Model.RouteModel</class>-->
+<!--        <class>Model.TeamModel</class>-->
+<!--        <class>Model.TicketModel</class>-->
+<!--        <class>Model.TicketattributeModel</class>-->
+<!--        <class>Model.TicketimageModel</class>-->
+<!--        <class>Model.TicketreadModel</class>-->
+<!--        <class>Model.TicketrelaterModel</class>-->
+<!--        <class>Model.TicketthreadModel</class>-->
+<!--        <class>Model.TokenModel</class>-->
+<!--        <class>Model.UserModel</class>-->
+<!--        <class>Module.Subcribe.SubcribeModel</class>-->
+        <properties>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.connection.username" value=""/>
+            <property name="hibernate.connection.password" value=""/>
+            <property name="hibernate.archive.autodetection" value="class"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+</persistence>

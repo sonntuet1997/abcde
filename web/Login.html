@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+
+        .bg-img {
+            height: 100%;
+            width: 77%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .carousel-item {
+            position: fixed;
+        }
+
+        .content {
+            background: #e9ebee;;
+            height: 100%;
+            position: fixed;
+            width: 23%;
+            left: 77%;
+        }
+        .white-bg {
+            background: white;
+            height: 100%;
+            position: fixed;
+            width: 23%;
+            left: 77%;
+        }
+        .back{
+            height: 100%;
+            position: fixed;
+            width: 77%;
+        }
+        .img-logo{
+            margin-top: 10rem;
+            width: 50%;
+            border-radius: 50%;
+        }
+        .input-form{
+            width: 70%;
+            margin-left: 15%;
+            margin-top: 2.5rem;
+        }
+
+        #error{
+            margin-top: .3rem;
+            margin-bottom: 1rem;
+            color: red;
+            font-size: .8rem;
+        }
+        .copyright{
+            font-size: 0.8rem;
+            text-align: right;
+            padding-right: .5rem;
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            top: 97%;
+        }
+        #slide{
+            position: fixed;
+        }
+    </style>
+    <link rel="stylesheet" href="Angular4/src/assets/bootstrap/css/bootstrap.css">
+    <script src="Angular4/src/assets/jquery-3.2.1.min.js"></script>
+    <script src="Angular4/src/assets/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<script>
+    var url_string = window.location.href; //window.location.href
+    var url = new URL(url_string);
+    var redirect = url.searchParams.get("redirect");
+
+    function sendData() {
+        $.ajax({
+            type: "POST",
+            url: "/api/authentication/login",
+            data: {username: $("#username").val(), password: $("#password").val()},
+            success: function (data) {
+                $("#success").html("Đăng nhập thành công!");
+                $("#error").html("");
+                if (redirect === null || redirect.trim() === '') {
+                    window.open("/", "_self")
+                } else {
+                    window.open(redirect, "_self")
+                }
+            },
+            error: function (data) {
+                $("#error").html("Tên đăng nhập hoặc mật khẩu không đúng!");
+            }
+        });
+    }
+
+    $(document).keypress(function(e) {
+        if(e.which === 13) {
+            sendData();
+        }
+    });
+</script>
+<body>
+<div id="slide" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner" role="listbox">
+        <div class="carousel-item active">
+            <img class="d-block img-fluid bg-img" src="Angular4/src/assets/23004783_249999498860544_1645881106987577872_o.jpg"
+                 alt="First slide">
+        </div>
+        <div class="carousel-item">
+            <img class="d-block img-fluid bg-img" src="Angular4/src/assets/VNU-UET ACM-ICPC 2017.jpg" alt="Second slide">
+        </div>
+        <div class="carousel-item">
+            <img class="d-block img-fluid bg-img" src="Angular4/src/assets/23472405_1087039098105176_6510231057560702204_n.png"
+                 alt="Third slide">
+        </div>
+    </div>
+</div>
+<div class="back"></div>
+<div class="white-bg"></div>
+<div class="content">
+    <div style="text-align: center"><img src="Angular4/src/assets/VNU-UET.jpg" class="img-logo"></div>
+    <div class="input-form">
+        <input type="text" class="form-control" id="username" placeholder="Tên đăng nhập" >
+        <input type="password" class="form-control" id="password" placeholder="Mật khẩu" style="margin-top: 0.3rem">
+        <div id="error"></div>
+        <button class="btn btn-success form-control" onclick="sendData()">Đăng nhập</button>
+    </div>
+</div>
+<div class="copyright">
+    Copyright © UET 2017
+</div>
+</body>
+</html>
