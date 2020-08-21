@@ -1,5 +1,7 @@
 package Module.GenerateTree;
 
+import Module.Log.LogEntity;
+import Module.Log.LogService;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -28,33 +30,65 @@ public class GenerateTreeController {
         return generateTreeEntity;
     }
 
+
     @GET
-    @Path("kill/{file}")
-//    @Produces(MediaType.APPLICATION_JSON)
-    public String kill(@PathParam("file") String file) {
-        Message message = new Message();
-        message.status = "Canceled";
-        try {
-            LogService.LogServices.get(file).close(message);
-            LogService.LogServices.remove(file);
-        } catch (IOException | EncodeException e) {
-            e.printStackTrace();
-        }
-        return "";
+    @Path("getAll")
+    @Produces(MediaType.APPLICATION_JSON)
+    public GenerateTreeEntity getAll() {
+        GenerateTreeEntity generateTreeEntity = new GenerateTreeEntity();
+        generateTreeEntity.geneticCode = "sadasd";
+        return generateTreeEntity;
     }
+//
+//    @GET
+//    @Path("kill/{file}")
+////    @Produces(MediaType.APPLICATION_JSON)
+//    public String kill(@PathParam("file") String file) {
+//        Message message = new Message();
+//        message.status = "Canceled";
+//        try {
+//            LogService.LogServices.get(file).close(message);
+//            LogService.LogServices.remove(file);
+//        } catch (IOException | EncodeException e) {
+//            e.printStackTrace();
+//        }
+//        return "";
+//    }
 
     @POST
     @Path("start-generate")
 //    @Produces({MediaType.APPLICATION_OCTET_STREAM})
 //    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public String startGenerate(
-//            @FormDataParam("json") FormDataBodyPart json,
+    public LogEntity startGenerate(
+            @FormDataParam("data") FormDataBodyPart data,
             @FormDataParam("alignment") FormDataBodyPart content,
             @FormDataParam("alignment") FormDataContentDisposition contentDisposition,
             @FormDataParam("alignment") final InputStream input) {
-        String t = generateTreeService.startGenerate(content, contentDisposition, input);
-        return t;
+        data.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+        GenerateTreeRequestEntity generateTreeRequestEntity = data.getValueAs(GenerateTreeRequestEntity.class);
+        LogEntity result = generateTreeService.startGenerate(generateTreeRequestEntity,content, contentDisposition, input);
+        return result;
+
+//        return Response.ok(streamingOutput).header("Content-Disposition",
+//                "attachment; filename=test.txt").build();
+    }
+
+
+    @POST
+    @Path("force-generate")
+//    @Produces({MediaType.APPLICATION_OCTET_STREAM})
+//    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public LogEntity forceGenerate(
+            @FormDataParam("data") FormDataBodyPart data,
+            @FormDataParam("alignment") FormDataBodyPart content,
+            @FormDataParam("alignment") FormDataContentDisposition contentDisposition,
+            @FormDataParam("alignment") final InputStream input) {
+        data.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+        GenerateTreeRequestEntity generateTreeRequestEntity = data.getValueAs(GenerateTreeRequestEntity.class);
+        LogEntity result = generateTreeService.startGenerate(generateTreeRequestEntity,content, contentDisposition, input);
+        return result;
 
 //        return Response.ok(streamingOutput).header("Content-Disposition",
 //                "attachment; filename=test.txt").build();

@@ -1,6 +1,19 @@
 package Module.File;
 
 import Module.EncryptKey.EncryptKeyService;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.persistence.tools.file.FileUtil;
+
+import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
+import static Module.IqtreePathEntity.IQTREE_RESULTFOLDER;
 
 /**
  * Created by Son on 6/15/2017.
@@ -17,6 +30,58 @@ public class FileService {
         this.filePath = this.filePath == null ? "files" : this.filePath;
         encryptKeyService = new EncryptKeyService();
     }
+
+    private static void zipFile(final String path, final File input, final ZipOutputStream zOut)
+            throws IOException {
+        if (input.isDirectory()) {
+            final File[] files = input.listFiles();
+            if (files != null) {
+                for (final File f : files) {
+                    final String childPath =
+                            path + input.getName() + (f.isDirectory() ? "/" : "");
+                    zipFile(childPath, f, zOut);
+                }
+            }
+        } else {
+            final String childPath =
+                    path + (path.length() > 0 ? "/" : "") + input.getName();
+            final ZipEntry entry = new ZipEntry(childPath);
+            zOut.putNextEntry(entry);
+            final InputStream fileInputStream =
+                    new BufferedInputStream(new FileInputStream(input));
+            try {
+                IOUtils.copy(fileInputStream, zOut);
+            } finally {
+                fileInputStream.close();
+            }
+        }
+    }
+
+    public void zip(String url, OutputStream outputStream) {
+        File result = new File(IQTREE_RESULTFOLDER);
+        ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
+        Arrays.stream(result.listFiles()).filter(file -> {
+            return file.getName().startsWith(url);
+        }).forEach(file -> {
+            try {
+                System.out.println(file.getAbsolutePath());
+                zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+                final InputStream fileInputStream =
+                        new BufferedInputStream(new FileInputStream(file));
+                IOUtils.copy(fileInputStream, zipOutputStream);
+                zipOutputStream.closeEntry();
+                fileInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        try {
+            zipOutputStream.finish();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 //
 //    public EncryptFileEntity upload(FileEntity fileEntity,
 //                                    FormDataBodyPart content,

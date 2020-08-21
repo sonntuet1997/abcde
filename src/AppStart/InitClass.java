@@ -1,6 +1,6 @@
 package AppStart;
 
-import Module.GenerateTree.LogService;
+import Module.Log.LogService;
 import Module.GenerateTree.Message;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.sql.DriverManager.deregisterDriver;
 import static java.sql.DriverManager.getDrivers;

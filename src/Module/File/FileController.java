@@ -1,17 +1,13 @@
 package Module.File;
 
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
 import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.InputStream;
 
-@Path("/files")
+@Path("/file")
 public class FileController {
     @Inject
     private FileService fileService;
@@ -19,6 +15,23 @@ public class FileController {
     public FileController() {
 
     }
+
+    @GET
+    @Path("zip/{file}")
+//    @Produces(MediaType.APPLICATION_JSON)
+
+    public Response zip(@PathParam("file") String file) {
+        StreamingOutput streamingOutput = outputStream -> {
+            try {
+                this.fileService.zip(file, outputStream);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+        return Response.ok(streamingOutput).header("Content-Disposition",
+                "attachment; filename=" + file + ".zip").build();
+    }
+
 //
 //    @POST
 //    @Path("cleanFolder")

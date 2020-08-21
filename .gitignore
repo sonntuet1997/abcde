@@ -1,2 +1,4 @@
 # Project exclude paths
 /target/
+/iqtree-1.6.12-Windows/data/
+/iqtree-1.6.12-Windows/result/

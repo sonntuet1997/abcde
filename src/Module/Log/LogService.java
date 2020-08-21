@@ -1,25 +1,29 @@
-package Module.GenerateTree;
+package Module.Log;
+
+import Module.GenerateTree.Message;
 
 import javax.websocket.EncodeException;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class LogService extends Thread {
-    public static HashMap<String, LogService> LogServices = new HashMap<>();
+    public static HashMap<LogEntity, LogService> LogServices = new HashMap<>();
     public ProcessBuilder builder;
-    public String fileName;
+    public LogEntity logEntity;
     public Scanner scan;
     public Process process;
 
-    public LogService(String fileName, ProcessBuilder builder) {
-        LogServices.put(fileName, this);
+    public LogService(LogEntity logEntity, ProcessBuilder builder) {
+        LogServices.put(logEntity, this);
         this.builder = builder;
-        this.fileName = fileName;
+        this.logEntity = logEntity;
+    }
+
+    public static boolean checkLog(LogEntity logEntity) {
+        return LogServices.containsKey(logEntity);
     }
 
     public void close(Message message) throws IOException, EncodeException {
@@ -29,13 +33,19 @@ public class LogService extends Thread {
         }
         process.destroy();
         scan.close();
-        LogEndpoint.close(fileName, message);
+        LogEndpoint.close(logEntity, message);
     }
 
     @Override
     public void run() {
         try {
             process = builder.start();
+            logEntity.status = "Processing";
+            LogEndpoint.updateLogEntity(logEntity);
+            LogEndpoint.fileSub.keySet().forEach(logEntity1 -> {
+                System.out.println(logEntity1.url);
+                System.out.println(logEntity1.status);
+            });
             scan = new Scanner(process.getInputStream());
 //            BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
 //            String line;
@@ -50,12 +60,14 @@ public class LogService extends Thread {
             while (scan.hasNextLine()) {
                 String next = scan.nextLine();
                 System.out.println(next);
-                LogEndpoint.broadcast(fileName, new Message("Processing", next));
+                LogEndpoint.broadcast(logEntity, new Message("Processing", next));
             }
             //TODO: checkcode
             Message message = new Message();
             message.status = "Success";
-            close(message);
+            LogEndpoint.broadcast(logEntity, message);
+            logEntity.status = "Success";
+            System.out.println("Suceessed: " + logEntity.url);
         } catch (Exception e) {
             e.printStackTrace();
         }
