@@ -1,11 +1,13 @@
 package Module.Log;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class LogEntity implements Serializable {
     public String url;
     public String processedFile;
+    public String logs;
     public boolean isProcessing;
     public String status;
 

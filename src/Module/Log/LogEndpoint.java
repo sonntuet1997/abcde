@@ -78,14 +78,15 @@ public class LogEndpoint {
                 return log.equals(logEntity);
             }).findFirst().get();
             message.status = y.status;
+            try {
+                message.content = y.logs != null ? y.logs : generateTreeService.getLogContent(filename);
+            } catch (Exception e) {
+                message.content = e.getMessage();
+                e.printStackTrace();
+            }
         }
         fileSub.get(logEntity).add(this);
-        try {
-            message.content = generateTreeService.getLogContent(filename);
-        } catch (Exception e) {
-            message.content = e.getMessage();
-            e.printStackTrace();
-        }
+
         session.getBasicRemote().sendObject(message);
     }
 

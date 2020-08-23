@@ -15,6 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import static Module.IqtreePathEntity.*;
@@ -43,46 +47,158 @@ public class GenerateTreeService {
         return FileUtils.readFileToString(new File(IQTREE_RESULTFOLDER, filename + ".log"), StandardCharsets.UTF_8);
     }
 
+    public String saveDataFile(InputStream input, FormDataContentDisposition info) throws IOException, NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        DigestInputStream dis = new DigestInputStream(input, md);
+        File file = new File(info.getFileName());
+        FileUtils.copyInputStreamToFile(dis, file);
+        String digest = Hex.getString(md.digest());
+        String fileName = digest + "-" + info.getFileName();
+        if (file.renameTo(new File(IQTREE_DATAFOLDER, fileName))) {
+            file.delete();
+        }
+        return fileName;
+    }
+
     public LogEntity startGenerate(
             GenerateTreeRequestEntity generateTreeRequestEntity,
             FormDataBodyPart content,
-            FormDataContentDisposition contentDisposition,
-            final InputStream input) {
+            FormDataContentDisposition alignmentFileInfo,
+            InputStream alignmentFileInput,
+            FormDataContentDisposition partitionFileInfo,
+            InputStream partitionFileInput) {
         try {
-            String fileName;
-            File file;
+            String alignmentFileName;
+            List<String> command = new ArrayList<>();
+            File alignmentFile;
             LogEntity logEntity = new LogEntity();
             if (generateTreeRequestEntity.inputData.useExampleAlignmentFile) {
-                file = new File(IQTREE_EXAMPLEALIGNMENT);
-                fileName = file.getName();
-                logEntity.processedFile = fileName;
+                alignmentFile = new File(IQTREE_EXAMPLEALIGNMENT);
+                alignmentFileName = alignmentFile.getName();
+                logEntity.processedFile = alignmentFileName;
             } else {
-                MessageDigest md = MessageDigest.getInstance("MD5");
-                DigestInputStream dis = new DigestInputStream(input, md);
-                file = new File(contentDisposition.getFileName());
-                FileUtils.copyInputStreamToFile(dis, file);
-                String digest = Hex.getString(md.digest());
-                fileName = digest + "-" + contentDisposition.getFileName();
-                logEntity.processedFile = contentDisposition.getFileName();
-                if (file.renameTo(new File(IQTREE_DATAFOLDER, fileName))) {
-                    file.delete();
-                }
-                file = new File(IQTREE_DATAFOLDER, fileName);
+                alignmentFileName = saveDataFile(alignmentFileInput, alignmentFileInfo);
+                alignmentFile = new File(IQTREE_DATAFOLDER, alignmentFileName);
+                logEntity.processedFile = alignmentFileInfo.getFileName();
             }
             logEntity.isProcessing = LogService.checkLog(logEntity);
-            logEntity.url = fileName;
+            logEntity.url = alignmentFileName;
+
+            //
 
             //TODO: OS Compatibility
             boolean isWindows = System.getProperty("os.name")
                     .toLowerCase().startsWith("windows");
             ProcessBuilder builder = new ProcessBuilder();
             builder.directory(new File(IQTREE_HOME));
-            File result = new File(IQTREE_RESULTFOLDER, fileName);
+            File resultFolder = new File(IQTREE_RESULTFOLDER, alignmentFileName);
             if (isWindows) {
-                builder.command("cmd.exe", "/c", "iqtree", "-pre", result.getAbsolutePath(), "-s", file.getAbsolutePath(), "-redo");
+                command.addAll(Arrays.asList("cmd.exe", "/c", "iqtree", "-pre", resultFolder.getAbsolutePath(), "-s", alignmentFile.getAbsolutePath(), "-redo"));
             } else {
-                builder.command("sh", "-c", "ls");
+                command.addAll(Arrays.asList("sh", "-c", "ls"));
             }
+            if (partitionFileInput != null) {
+                String partitionFileName = saveDataFile(partitionFileInput, partitionFileInfo);
+                if (partitionFileName.split("-")[0].equals(alignmentFileName.split("-")[0])) {
+                    return null;
+                    //TODO: Notify error
+                }
+                File partitionFile = new File(IQTREE_DATAFOLDER, partitionFileName);
+                if (generateTreeRequestEntity.inputData.partitionType == PartitionType.Linked) {
+                    command.addAll(Arrays.asList("-spp", partitionFile.getAbsolutePath()));
+                } else {
+                    command.addAll(Arrays.asList("-sp", partitionFile.getAbsolutePath()));
+                }
+            }
+
+            //TODO: TreeFile ???
+
+
+            if (generateTreeRequestEntity.inputData.sequenceType != SequenceType.AUTO) {
+                String sequenceType = generateTreeRequestEntity.inputData.sequenceType.name();
+                if (generateTreeRequestEntity.inputData.sequenceType != SequenceType.CODON && generateTreeRequestEntity.inputData.sequenceType != SequenceType.NT2AA) {
+                    if (generateTreeRequestEntity.inputData.genericCode > 0 && generateTreeRequestEntity.inputData.genericCode <= 25) {
+                        sequenceType += generateTreeRequestEntity.inputData.genericCode.toString();
+                    }
+                }
+                command.addAll(Arrays.asList("-st", sequenceType));
+            }
+
+            //TODO: Criterion ???
+            String mCommand = "";
+            generateTreeRequestEntity.substitutionOption.correctSubstitutionModel(generateTreeRequestEntity.inputData.sequenceType);
+            if (generateTreeRequestEntity.substitutionOption.freeRateHeterogeneity) {
+                mCommand += ("+R" + (generateTreeRequestEntity.substitutionOption.rateCategory != 0 ? generateTreeRequestEntity.substitutionOption.rateCategory.toString() : ""));
+            } else {
+                if (generateTreeRequestEntity.substitutionOption.substitutionModel.equals("Auto")) {
+                    mCommand += "TEST";
+                } else {
+                    mCommand += generateTreeRequestEntity.substitutionOption.substitutionModel;
+                    mCommand += Arrays.stream(generateTreeRequestEntity.substitutionOption.rateHeterogeneityOptions).map(option -> {
+                        switch (option.toLowerCase()) {
+                            case "gamma":
+                                return "+G";
+                            case "invar":
+                                return "+I";
+                            default:
+                                return null;
+                        }
+                    }).distinct().reduce("", (sub, t) -> sub + t);
+                    switch (generateTreeRequestEntity.substitutionOption.stateFrequency) {
+                        case AAModel:
+                            break;
+                        case CodonF1x4:
+                            mCommand += "+F1x4";
+                            break;
+                        case CodonF3x4:
+                            mCommand += "+F3x4";
+                            break;
+                        case Empirical:
+                            mCommand += "+F";
+                        case MlOptimized:
+                            mCommand += "+F0";
+                    }
+                    if (Arrays.stream(generateTreeRequestEntity.substitutionOption.rateHeterogeneityOptions).noneMatch(option -> option.toLowerCase().equals("invar"))) {
+                        if (generateTreeRequestEntity.substitutionOption.ascertainmentCorrection) {
+                            mCommand += "+ASC";
+                        }
+                    }
+                }
+            }
+            command.addAll(Arrays.asList("-m", mCommand));
+            if (generateTreeRequestEntity.branchSupportAnalysis.bootstrapAnalysis == BootstrapAnalysis.ULTRAFAST) {
+                command.addAll(Arrays.asList("-bb", generateTreeRequestEntity.branchSupportAnalysis.numberBootstrap.toString()));
+            } else if (generateTreeRequestEntity.branchSupportAnalysis.bootstrapAnalysis == BootstrapAnalysis.STANDARD) {
+                //TODO: Check if greater 100???
+                //TODO: Check value
+                if (generateTreeRequestEntity.branchSupportAnalysis.numberBootstrap != 100) {
+                    return null;
+                }
+                command.addAll(Arrays.asList("-b", generateTreeRequestEntity.branchSupportAnalysis.numberBootstrap.toString()));
+            }
+            if (generateTreeRequestEntity.branchSupportAnalysis.createUfBootFile) {
+                command.add("-wbt");
+            }
+            if (generateTreeRequestEntity.branchSupportAnalysis.maxIteration >= 1000) {
+                command.addAll(Arrays.asList("-nm", generateTreeRequestEntity.branchSupportAnalysis.maxIteration.toString()));
+            }
+            if (generateTreeRequestEntity.branchSupportAnalysis.minCorrelation >= 0.9 && generateTreeRequestEntity.branchSupportAnalysis.minCorrelation <= 1) {
+                command.addAll(Arrays.asList("-bcor", String.valueOf(generateTreeRequestEntity.branchSupportAnalysis.minCorrelation)));
+            }
+            if (generateTreeRequestEntity.branchSupportAnalysis.singleBranchTest.sHaLRTTest) {
+                command.addAll(Arrays.asList("-alrt", generateTreeRequestEntity.branchSupportAnalysis.singleBranchTest.replicates.toString()));
+            }
+            if (generateTreeRequestEntity.branchSupportAnalysis.singleBranchTest.approximateBayes) {
+                command.add("-abayes");
+            }
+            if (generateTreeRequestEntity.searchParameters.perturbationStrength >= 0 && generateTreeRequestEntity.searchParameters.perturbationStrength <=1) {
+                command.addAll(Arrays.asList("-pers", String.valueOf(generateTreeRequestEntity.searchParameters.perturbationStrength)));
+            }
+            if (generateTreeRequestEntity.searchParameters.stoppingRule >= 100) {
+                command.addAll(Arrays.asList("-numstop", String.valueOf(generateTreeRequestEntity.searchParameters.stoppingRule)));
+            }
+            builder.command(command);
+            System.out.println(builder.command());
             LogService logService = new LogService(logEntity, builder);
             logService.start();
             return logEntity;

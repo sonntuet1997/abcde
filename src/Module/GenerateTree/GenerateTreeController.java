@@ -1,16 +1,13 @@
 package Module.GenerateTree;
 
 import Module.Log.LogEntity;
-import Module.Log.LogService;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.inject.Inject;
-import javax.websocket.EncodeException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
 import java.io.InputStream;
 
 @Path("/generate-tree")
@@ -63,11 +60,14 @@ public class GenerateTreeController {
     public LogEntity startGenerate(
             @FormDataParam("data") FormDataBodyPart data,
             @FormDataParam("alignment") FormDataBodyPart content,
-            @FormDataParam("alignment") FormDataContentDisposition contentDisposition,
-            @FormDataParam("alignment") final InputStream input) {
+            @FormDataParam("alignment") FormDataContentDisposition alignmentFileInfo,
+            @FormDataParam("alignment") final InputStream alignmentFileInput,
+            @FormDataParam("partition") FormDataContentDisposition partitionFileInfo,
+            @FormDataParam("partition") final InputStream partitionFileInput
+    ) {
         data.setMediaType(MediaType.APPLICATION_JSON_TYPE);
         GenerateTreeRequestEntity generateTreeRequestEntity = data.getValueAs(GenerateTreeRequestEntity.class);
-        LogEntity result = generateTreeService.startGenerate(generateTreeRequestEntity,content, contentDisposition, input);
+        LogEntity result = generateTreeService.startGenerate(generateTreeRequestEntity, content, alignmentFileInfo, alignmentFileInput, partitionFileInfo, partitionFileInput);
         return result;
 
 //        return Response.ok(streamingOutput).header("Content-Disposition",
@@ -83,11 +83,13 @@ public class GenerateTreeController {
     public LogEntity forceGenerate(
             @FormDataParam("data") FormDataBodyPart data,
             @FormDataParam("alignment") FormDataBodyPart content,
-            @FormDataParam("alignment") FormDataContentDisposition contentDisposition,
-            @FormDataParam("alignment") final InputStream input) {
+            @FormDataParam("alignment") FormDataContentDisposition alignmentFileInfo,
+            @FormDataParam("alignment") final InputStream alignmentFileInput,
+            @FormDataParam("partition") FormDataContentDisposition partitionFileInfo,
+            @FormDataParam("partition") final InputStream partitionFileInput) {
         data.setMediaType(MediaType.APPLICATION_JSON_TYPE);
         GenerateTreeRequestEntity generateTreeRequestEntity = data.getValueAs(GenerateTreeRequestEntity.class);
-        LogEntity result = generateTreeService.startGenerate(generateTreeRequestEntity,content, contentDisposition, input);
+        LogEntity result = generateTreeService.startGenerate(generateTreeRequestEntity, content, alignmentFileInfo, alignmentFileInput, partitionFileInfo, partitionFileInput);
         return result;
 
 //        return Response.ok(streamingOutput).header("Content-Disposition",

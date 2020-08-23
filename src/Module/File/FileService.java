@@ -60,9 +60,7 @@ public class FileService {
     public void zip(String url, OutputStream outputStream) {
         File result = new File(IQTREE_RESULTFOLDER);
         ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
-        Arrays.stream(result.listFiles()).filter(file -> {
-            return file.getName().startsWith(url);
-        }).forEach(file -> {
+        Arrays.stream(result.listFiles()).filter(file -> file.getName().startsWith(url)).forEach(file -> {
             try {
                 System.out.println(file.getAbsolutePath());
                 zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
