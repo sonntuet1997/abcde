@@ -10,16 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9edbe23-d7fe-439e-a0b6-ac3906520b5c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Module/GenerateTree/ConsoleInput.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Module/GenerateTree/ConsoleInputReadTask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Module/File/FileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Module/File/FileService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Module/GenerateTree/GenerateTreeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Module/GenerateTree/GenerateTreeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Module/GenerateTree/GenerateTreeRequestEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Module/GenerateTree/GenerateTreeRequestEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Module/GenerateTree/GenerateTreeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Module/GenerateTree/GenerateTreeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Module/Log/LogEndpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Module/Log/LogEndpoint.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Module/Log/LogEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Module/Log/LogEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Module/Log/LogService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Module/Log/LogService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -267,6 +258,9 @@
       <workItem from="1598068027194" duration="5412000" />
       <workItem from="1598128621822" duration="11563000" />
       <workItem from="1598145278352" duration="11168000" />
+      <workItem from="1598244635450" duration="751000" />
+      <workItem from="1598263913141" duration="777000" />
+      <workItem from="1598321584337" duration="929000" />
     </task>
     <task id="LOCAL-00001" summary="a">
       <created>1596798871075</created>
@@ -339,29 +333,29 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="678" y="218" key="Github.UntrackedFilesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596797362407" />
-    <state width="1293" height="367" key="GridCell.Tab.0.bottom" timestamp="1598153912129">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1293" height="256" key="GridCell.Tab.0.bottom" timestamp="1598321793557">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state width="1293" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1598153912129" />
-    <state width="1293" height="610" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1598141830384" />
+    <state width="1293" height="256" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1598321793557" />
     <state width="1293" height="51" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1598071648910" />
-    <state width="1293" height="367" key="GridCell.Tab.0.center" timestamp="1598153912129">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1293" height="256" key="GridCell.Tab.0.center" timestamp="1598321793557">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state width="1293" height="367" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1598153912129" />
-    <state width="1293" height="610" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1598141830383" />
+    <state width="1293" height="256" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1598321793557" />
     <state width="1293" height="51" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1598071648910" />
-    <state width="1293" height="367" key="GridCell.Tab.0.left" timestamp="1598153912129">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1293" height="256" key="GridCell.Tab.0.left" timestamp="1598321793556">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state width="1293" height="367" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1598153912129" />
-    <state width="1293" height="610" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1598141830383" />
+    <state width="1293" height="256" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1598321793556" />
     <state width="1293" height="51" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1598071648910" />
-    <state width="1293" height="367" key="GridCell.Tab.0.right" timestamp="1598153912129">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1293" height="256" key="GridCell.Tab.0.right" timestamp="1598321793557">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state width="1293" height="367" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1598153912129" />
-    <state width="1293" height="610" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1598141830384" />
+    <state width="1293" height="256" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1598321793557" />
     <state width="1293" height="51" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1598071648910" />
     <state width="1293" height="367" key="GridCell.Tab.1.bottom" timestamp="1598153912129">
       <screen x="0" y="0" width="1920" height="1040" />
