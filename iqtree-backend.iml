@@ -39,6 +39,8 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/docker/btl" />
+      <excludeFolder url="file://$MODULE_DIR$/iqtree-runtime/iqtree-1.6.12-MacOSX/data" />
+      <excludeFolder url="file://$MODULE_DIR$/iqtree-runtime/iqtree-1.6.12-MacOSX/result" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

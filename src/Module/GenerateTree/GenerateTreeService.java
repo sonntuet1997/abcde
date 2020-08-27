@@ -87,15 +87,15 @@ public class GenerateTreeService {
             //
 
             //TODO: OS Compatibility
-            boolean isWindows = System.getProperty("os.name")
-                    .toLowerCase().startsWith("windows");
+            String systemName = System.getProperty("os.name")
+                    .toLowerCase();
             ProcessBuilder builder = new ProcessBuilder();
-            builder.directory(new File(IQTREE_HOME));
+            builder.directory(new File(IQTREE_BIN));
             File resultFolder = new File(IQTREE_RESULTFOLDER, alignmentFileName);
-            if (isWindows) {
+            if (systemName.startsWith("windows")) {
                 command.addAll(Arrays.asList("cmd.exe", "/c", "iqtree", "-pre", resultFolder.getAbsolutePath(), "-s", alignmentFile.getAbsolutePath(), "-redo"));
-            } else {
-                command.addAll(Arrays.asList("sh", "-c", "ls"));
+            } else  if (systemName.startsWith("mac os x")){
+                command.addAll(Arrays.asList("./iqtree", "-pre", resultFolder.getAbsolutePath(), "-s", alignmentFile.getAbsolutePath(), "-redo"));
             }
             if (partitionFileInput != null) {
                 String partitionFileName = saveDataFile(partitionFileInput, partitionFileInfo);
