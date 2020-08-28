@@ -1,5 +1,6 @@
 package Module.GenerateTree;
 
+import Module.Exception.CustomException;
 import Module.Log.LogEntity;
 import Module.Log.LogService;
 import org.apache.commons.io.FileUtils;
@@ -77,6 +78,9 @@ public class GenerateTreeService {
                 alignmentFileName = alignmentFile.getName();
                 logEntity.processedFile = alignmentFileName;
             } else {
+                if (alignmentFileInput == null) {
+                    throw new CustomException(400, "AlignmentFile must not null");
+                }
                 alignmentFileName = saveDataFile(alignmentFileInput, alignmentFileInfo);
                 alignmentFile = new File(IQTREE_DATAFOLDER, alignmentFileName);
                 logEntity.processedFile = alignmentFileInfo.getFileName();
@@ -86,7 +90,7 @@ public class GenerateTreeService {
 
             //
 
-            //TODO: OS Compatibility
+            //TODO: linux  Compatibility
             String systemName = System.getProperty("os.name")
                     .toLowerCase();
             ProcessBuilder builder = new ProcessBuilder();
@@ -94,7 +98,7 @@ public class GenerateTreeService {
             File resultFolder = new File(IQTREE_RESULTFOLDER, alignmentFileName);
             if (systemName.startsWith("windows")) {
                 command.addAll(Arrays.asList("cmd.exe", "/c", "iqtree", "-pre", resultFolder.getAbsolutePath(), "-s", alignmentFile.getAbsolutePath(), "-redo"));
-            } else  if (systemName.startsWith("mac os x")){
+            } else if (systemName.startsWith("mac os x")) {
                 command.addAll(Arrays.asList("./iqtree", "-pre", resultFolder.getAbsolutePath(), "-s", alignmentFile.getAbsolutePath(), "-redo"));
             }
             if (partitionFileInput != null) {
@@ -191,7 +195,7 @@ public class GenerateTreeService {
             if (generateTreeRequestEntity.branchSupportAnalysis.singleBranchTest.approximateBayes) {
                 command.add("-abayes");
             }
-            if (generateTreeRequestEntity.searchParameters.perturbationStrength >= 0 && generateTreeRequestEntity.searchParameters.perturbationStrength <=1) {
+            if (generateTreeRequestEntity.searchParameters.perturbationStrength >= 0 && generateTreeRequestEntity.searchParameters.perturbationStrength <= 1) {
                 command.addAll(Arrays.asList("-pers", String.valueOf(generateTreeRequestEntity.searchParameters.perturbationStrength)));
             }
             if (generateTreeRequestEntity.searchParameters.stoppingRule >= 100) {
@@ -204,7 +208,10 @@ public class GenerateTreeService {
             return logEntity;
 //            int exitCode = process.waitFor();
 //            assert exitCode == 0;
+        } catch (CustomException e) {
+            throw e;
         } catch (Exception e) {
+
             e.printStackTrace();
         }
         return null;
